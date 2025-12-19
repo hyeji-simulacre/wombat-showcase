@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진안 학교 아카이브 프로젝트 | 웜뱃</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Pretendard:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --cream: #F7F3EB;
+            --warm-white: #FDFCFA;
+            --sepia: #8B7355;
+            --sepia-light: #C4B5A0;
+            --teal: #2D7D7D;
+            --teal-dark: #1D5C5C;
+            --teal-light: #E8F4F4;
+            --ink: #2C2417;
+            --ink-light: #5C5347;
+            --gold: #C9A962;
+            --shadow: rgba(44, 36, 23, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Grain Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 24px;
+            position: relative;
+            background: linear-gradient(180deg, var(--warm-white) 0%, var(--cream) 100%);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--cream), transparent);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--teal-light);
+            border: 1px solid var(--teal);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--teal-dark);
+            margin-bottom: 32px;
+            animation: fadeSlideDown 0.8s ease-out;
+        }
+
+        .badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--teal);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-family: 'Noto Serif KR', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            animation: fadeSlideUp 1s ease-out 0.2s both;
+        }
+
+        .hero-title .highlight {
+            display: inline-block;
+            position: relative;
+            color: var(--teal-dark);
+        }
+
+        .hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: -4px;
+            right: -4px;
+            height: 12px;
+            background: var(--gold);
+            opacity: 0.3;
+            z-index: -1;
+            transform: skewX(-3deg);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--ink-light);
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 48px;
+            animation: fadeSlideUp 1s ease-out 0.4s both;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px var(--shadow);
+            animation: fadeSlideUp 1s ease-out 0.6s both;
+        }
+
+        .author-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #5BACA3;
+        }
+
+        .author-avatar img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            margin: 15%;
+        }
+
+        .author-details h3 {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .author-details p {
+            font-size: 14px;
+            color: var(--ink-light);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--sepia);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            animation: bounce 2s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        .scroll-indicator svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif KR', serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: var(--ink);
+            color: var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-section::before {
+            content: 'BEFORE';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Noto Serif KR', serif;
+            font-size: clamp(8rem, 25vw, 20rem);
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .problem-section .section-label {
+            color: var(--gold);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .problem-card {
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .problem-card .icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .problem-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .problem-card p {
+            font-size: 15px;
+            color: var(--sepia-light);
+            line-height: 1.7;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            background: linear-gradient(180deg, var(--cream) 0%, var(--teal-light) 100%);
+            position: relative;
+        }
+
+        .solution-section::before {
+            content: 'AFTER';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Noto Serif KR', serif;
+            font-size: clamp(8rem, 25vw, 20rem);
+            font-weight: 900;
+            color: rgba(45, 125, 125, 0.05);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin: 48px 0;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 32px 16px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px var(--shadow);
+        }
+
+        .stat-number {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--teal-dark);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--ink-light);
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background: white;
+            padding: 80px 24px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px var(--shadow);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 16px 60px rgba(44, 36, 23, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gallery-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px;
+            background: linear-gradient(to top, rgba(44, 36, 23, 0.9), transparent);
+            color: white;
+        }
+
+        .gallery-item-label h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .gallery-item-label p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .gallery-featured {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-featured {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .gallery-stack {
+            display: grid;
+            gap: 32px;
+        }
+
+        /* Tech Stack */
+        .tech-section {
+            background: var(--cream);
+            padding: 80px 24px;
+        }
+
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .tech-tag {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid var(--sepia-light);
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--ink);
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--ink);
+            color: var(--cream);
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: var(--sepia-light);
+            margin-bottom: 8px;
+        }
+
+        footer .project-name {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(8px);
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 40px;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <span class="badge">Archive AI Study 1기 프로젝트</span>
+        <h1 class="hero-title">
+            흩어진 기록이<br>
+            <span class="highlight">데이터로 부활하다</span>
+        </h1>
+        <p class="hero-subtitle">
+            전라북도 진안군 초등학교 100년의 역사를<br>
+            AI와 함께 체계적인 데이터베이스와 시각화 맵으로 재구성하다
+        </p>
+        <div class="author-info">
+            <div class="author-avatar"><img src="case-01-screenshot/웜뱃.jpg" alt="웜뱃"></div>
+            <div class="author-details">
+                <h3>웜뱃</h3>
+                <p>교육청 소속 기록연구사</p>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>SCROLL</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <span class="section-label">The Challenge</span>
+            <h2 class="section-title">산재된 기록, 보이지 않는 역사</h2>
+            <p style="color: var(--sepia-light); max-width: 640px; font-size: 17px;">
+                면지, 문화원 자료, 교육청 문서에 흩어진 학교 데이터.<br>
+                설립, 폐교, 통폐합의 복잡한 관계를 파악하려면<br>
+                수십 개의 자료를 일일이 뒤져야 했습니다.
+            </p>
+            <div class="problem-grid">
+                <div class="problem-card fade-in">
+                    <div class="icon">📚</div>
+                    <h4>데이터 수집의 비효율</h4>
+                    <p>자료마다 형식이 달라서 일일이 찾아서 복사-붙여넣기 해야 하는 수작업의 반복</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="icon">🔗</div>
+                    <h4>관계 파악의 어려움</h4>
+                    <p>분교 설치 → 본교 승격 → 통폐합 같은 복잡한 학교 변천사를 한눈에 볼 수 없음</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="icon">👁️</div>
+                    <h4>시각화의 부재</h4>
+                    <p>텍스트로만 정리하면 학교 간 관계와 시간의 흐름이 직관적으로 보이지 않음</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="container">
+            <span class="section-label">The Solution</span>
+            <h2 class="section-title">AI와 함께 만든 살아있는 아카이브</h2>
+            <p style="color: var(--ink-light); max-width: 640px; font-size: 17px;">
+                Claude Code와 SQLite를 활용해 산재된 데이터를 체계적인 데이터베이스로 구조화하고,<br>
+                인터랙티브 시각화로 학교의 역사를 한눈에 볼 수 있게 만들었습니다.
+            </p>
+            <div class="stats-row">
+                <div class="stat-card fade-in">
+                    <div class="stat-number">41</div>
+                    <div class="stat-label">총 학교 수</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">현존 학교</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">27</div>
+                    <div class="stat-label">폐교</div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">147</div>
+                    <div class="stat-label">기록된 이벤트</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <span class="section-label">Results</span>
+            <h2 class="section-title">프로젝트 결과물</h2>
+
+            <div class="gallery-grid">
+                <!-- 1. Dashboard -->
+                <div class="gallery-item fade-in" onclick="openLightbox(this)">
+                    <img src="case-01-screenshot/251129_dashboard.png" alt="진안 학교 통계 대시보드">
+                    <div class="gallery-item-label">
+                        <h4>진안 학교 통계 대시보드</h4>
+                        <p>읍면별 분포, 연도별 개교/폐교 추이, 이벤트 유형별 분석</p>
+                    </div>
+                </div>
+
+                <!-- 2. Network Graph -->
+                <div class="gallery-item fade-in" onclick="openLightbox(this)">
+                    <img src="case-01-screenshot/251129_network.png" alt="학교 관계 네트워크">
+                    <div class="gallery-item-label">
+                        <h4>학교 관계 네트워크</h4>
+                        <p>본교-분교, 통폐합 관계를 시각적으로 표현</p>
+                    </div>
+                </div>
+
+                <!-- 3. Detail View -->
+                <div class="gallery-item fade-in" onclick="openLightbox(this)">
+                    <img src="case-01-screenshot/251127_full.png" alt="학교 상세 정보">
+                    <div class="gallery-item-label">
+                        <h4>학교 상세 정보 뷰</h4>
+                        <p>교명 변천, 주소 이력, 주요 사건 타임라인</p>
+                    </div>
+                </div>
+
+                <!-- 4. Analysis Tool -->
+                <div class="gallery-item fade-in" onclick="openLightbox(this)">
+                    <img src="case-01-screenshot/251109.png" alt="폐지학교 현황 분석">
+                    <div class="gallery-item-label">
+                        <h4>폐지학교 현황 분석</h4>
+                        <p>데이터 업로드, 필터링, 관계 그래프 통합 도구</p>
+                    </div>
+                </div>
+
+                <!-- 5. Timeline -->
+                <div class="gallery-item fade-in" onclick="openLightbox(this)">
+                    <img src="case-01-screenshot/251129_timeline.png" alt="학교 연혁 타임라인">
+                    <div class="gallery-item-label">
+                        <h4>학교 연혁 타임라인</h4>
+                        <p>연도별 학교 설립/폐교/변경 이벤트 연대기</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Section -->
+    <section class="tech-section">
+        <div class="container">
+            <span class="section-label">Tech Stack</span>
+            <h2 class="section-title">사용한 도구</h2>
+            <div class="tech-grid">
+                <span class="tech-tag">Claude Code</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">Obsidian</span>
+                <span class="tech-tag">dbdiagram.io</span>
+                <span class="tech-tag">HTML/CSS/JS</span>
+                <span class="tech-tag">ERD 설계</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Archive AI Study 1기 (2025.10. - 12.)</p>
+        <p class="project-name">진안 관내 초등학교 관계 데이터베이스 & 시각화 맵</p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">&times;</button>
+        <img src="" alt="">
+    </div>
+
+    <script>
+        // Scroll Animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Lightbox
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>
